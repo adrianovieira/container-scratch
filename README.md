@@ -2,7 +2,7 @@
 
 Learning Linux Containers from scratch
 
-May be better known as operating system elvel virtualization (oslv)
+May be better known as operating system level virtualization (oslv)
 
 ## Sample network namespace
 
