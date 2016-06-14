@@ -27,3 +27,10 @@ ip netns exec $(CONTAINER_NAME) ip r add default via $(GATEWAY)
 ip netns exec $(CONTAINER_NAME) systemd-nspawn -M $(CONTAINER_NAME) -D $(CONTAINER_ROOTFS) -b #|| true
 ip netns del $(CONTAINER_NAME)
 ```
+
+
+# References
+
+Linux Kernel Networking Implementation and Theory. Rosen, Rami. 2014
+
+Namespaces in operation, part 1: namespaces overview. Kerrisk, Michael. part 1 - 7. January 4, 2013 at <http://lwn.net/Articles/531114/>
