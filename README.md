@@ -15,6 +15,39 @@ export CONTAINER_ROOTFS="$HOME/$CONTAINER_NAME/"
 ```
 
 ```bash
+cat <<EOF > /etc/sysconfig/network-scripts/ifcfg-$BRIDGE
+NAME=$BRIDGE
+IPADDR=$GATEWAY
+NETMASK=255.255.255.0
+TYPE=Bridge
+BOOTPROTO=none
+DEVICE=$BRIDGE
+NM_MANAGED=no
+ONBOOT=yes
+EOF
+
+ifup $BRIDGE && ip addr show $BRIDGE
+
+```
+
+### Container *shell*
+
+```bash
+ip netns add $(CONTAINER_NAME)
+ip link add oslv-$(CONTAINER_NAME) type veth peer name xoslv-$(CONTAINER_NAME)
+ip link set xoslv-$(CONTAINER_NAME) netns $(CONTAINER_NAME)
+brctl addif $(BRIDGE) oslv-$(CONTAINER_NAME)
+ip link set oslv-$(CONTAINER_NAME) up
+ip netns exec $(CONTAINER_NAME) ip link set xoslv-$(CONTAINER_NAME) name eth0
+ip netns exec $(CONTAINER_NAME) ip link set eth0 up
+ip netns exec $(CONTAINER_NAME) ip a add $(IP_ADDR) dev eth0
+ip netns exec $(CONTAINER_NAME) ip r add default via $(GATEWAY)
+ip netns exec $(CONTAINER_NAME) bash
+```
+
+### Container *boot*
+
+```bash
 ip netns add $(CONTAINER_NAME)
 ip link add oslv-$(CONTAINER_NAME) type veth peer name xoslv-$(CONTAINER_NAME)
 ip link set xoslv-$(CONTAINER_NAME) netns $(CONTAINER_NAME)
@@ -27,7 +60,6 @@ ip netns exec $(CONTAINER_NAME) ip r add default via $(GATEWAY)
 ip netns exec $(CONTAINER_NAME) systemd-nspawn -M $(CONTAINER_NAME) -D $(CONTAINER_ROOTFS) -b #|| true
 ip netns del $(CONTAINER_NAME)
 ```
-
 
 # References
 
