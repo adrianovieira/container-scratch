@@ -1,6 +1,6 @@
 # Linux Containers from scratch (container-scratch)
 
-Learning Linux Containers from scratch
+Learning *Kernel* Linux Containers from scratch
 
 May be better known as operating system level virtualization (oslv)
 
